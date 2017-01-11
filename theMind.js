@@ -1,37 +1,24 @@
-// the story of the samurai who woke hungover and needed to find his lost katana
-// before his daimio found out and made him cut his guts with his little sword...
+// A Samurai is lost in a labyrinth. He lost his katana and things the katana is somewhere in the same labyrinth. He needs the help of gods to show him the shortest way to get to the Katana, so he can be ready to fight.
+// The gods need to tell him to make 6 moves: up, right, right, right, right&down, down
 
 
 
-var castle = new Array(10);
+var castle = new Array(3);
 for (var i = 0; i < castle.length; i++) {
-  castle[i] = new Array(10).fill('Empty');
+  castle[i] = new Array(6).fill('Empty');
 }
 
-castle[0][0] = "Samurai";
-castle[8][8] = "Katana";
+castle[1][1] = "Samurai";
+castle[2][5] = "Katana";
 
-castle[0][3] = "Wall";
+castle[0][0] = "Wall";
+
+castle[1][2] = "Wall";
+castle[1][3] = "Wall";
 
 castle[2][0] = "Wall";
 castle[2][1] = "Wall";
 castle[2][2] = "Wall";
-castle[2][3] = "Wall";
-
-castle[4][3] = "Wall";
-castle[4][4] = "Wall";
-castle[4][5] = "Wall";
-castle[4][6] = "Wall";
-
-castle[5][6] = "Wall";
-
-castle[6][6] = "Wall";
-
-castle[7][7] = "Wall";
-castle[7][8] = "Wall";
-castle[7][9] = "Wall";
-
-castle[8][7] = "Wall";
 
 var calculateShortestPath = function([startY, startX], castle) {
   var dft = startY;
@@ -64,11 +51,10 @@ var calculateShortestPath = function([startY, startX], castle) {
 };
 
 var locationStatus = function(position, castle) {
-  var castleSize = castle.length;
   var dft = position.distanceFromTop;
   var dfl = position.distanceFromLeft;
 
-  if(dfl < 0 || dfl >= castleSize || dft < 0 || dft >= castleSize) {
+  if(dfl < 0 || dfl >= 6 || dft < 0 || dft >= 3) {
     return 'Invalid';
   } else if(castle[dft][dfl] == 'Katana') {
     return 'Katana';
@@ -107,8 +93,12 @@ var exploreInDirection = function(currentPosition, direction, castle) {
   if(newPosition.status == 'Valid') {
     castle[newPosition.distanceFromTop][newPosition.distanceFromLeft] = 'Investigated';
   }
-
+  if(newPosition.route[4] == 'Right' && newPosition.route[5] == 'Down') {
+    newPosition.route.splice(4,5);
+    newPosition.route.push("Right&Down");
+  }
   return newPosition;
+
 };
 
-console.log(calculateShortestPath([0,0], castle));
+console.log(calculateShortestPath([1,1], castle));
