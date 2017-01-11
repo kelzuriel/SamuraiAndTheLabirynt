@@ -3,35 +3,38 @@
 
 
 
-var castle = new Array(10);
+var castle = new Array(3);
 for (var i = 0; i < castle.length; i++) {
   castle[i] = new Array(10).fill('Empty');
 }
 
-castle[0][0] = "Samurai";
-castle[8][8] = "Katana";
+castle[1][1] = "Samurai";
+castle[1][6] = "Katana";
 
+castle[0][0] = "Wall";
+castle[0][1] = "Wall";
+castle[0][2] = "Wall";
 castle[0][3] = "Wall";
+castle[0][4] = "Wall";
+castle[0][5] = "Wall";
+castle[0][6] = "Wall";
+castle[0][7] = "Wall";
+castle[0][8] = "Wall";
+castle[0][9] = "Wall";
+
+castle[1][0] = "Wall";
+castle[1][9] = "Wall";
 
 castle[2][0] = "Wall";
 castle[2][1] = "Wall";
 castle[2][2] = "Wall";
 castle[2][3] = "Wall";
-
-castle[4][3] = "Wall";
-castle[4][4] = "Wall";
-castle[4][5] = "Wall";
-castle[4][6] = "Wall";
-
-castle[5][6] = "Wall";
-
-castle[6][6] = "Wall";
-
-castle[7][7] = "Wall";
-castle[7][8] = "Wall";
-castle[7][9] = "Wall";
-
-castle[8][7] = "Wall";
+castle[2][4] = "Wall";
+castle[2][5] = "Wall";
+castle[2][6] = "Wall";
+castle[2][7] = "Wall";
+castle[2][8] = "Wall";
+castle[2][9] = "Wall";
 
 var calculateShortestPath = function([startY, startX], castle) {
   var dft = startY;
@@ -64,11 +67,10 @@ var calculateShortestPath = function([startY, startX], castle) {
 };
 
 var locationStatus = function(position, castle) {
-  var castleSize = castle.length;
   var dft = position.distanceFromTop;
   var dfl = position.distanceFromLeft;
 
-  if(dfl < 0 || dfl >= castleSize || dft < 0 || dft >= castleSize) {
+  if(dfl < 0 || dfl >= 10 || dft < 0 || dft >= 3) {
     return 'Invalid';
   } else if(castle[dft][dfl] == 'Katana') {
     return 'Katana';
@@ -111,4 +113,4 @@ var exploreInDirection = function(currentPosition, direction, castle) {
   return newPosition;
 };
 
-console.log(calculateShortestPath([0,0], castle));
+console.log(calculateShortestPath([1,1], castle));
