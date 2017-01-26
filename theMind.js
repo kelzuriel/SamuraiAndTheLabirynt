@@ -8,9 +8,9 @@ var numberOfColumns = 10;
 var startY = 1;
 var startX = 1;
 
-var labyrinth = new Array(lineNumber);
+var labyrinth = new Array(numberOfLines);
 for (var i = 0; i < labyrinth.length; i++) {
-  labyrinth[i] = new Array(columnNumber).fill('Empty');
+  labyrinth[i] = new Array(numberOfColumns).fill('Empty');
 };
 
 labyrinth[startY][startX] = "Samurai";
@@ -75,7 +75,7 @@ var locationStatus = function(position, labyrinth) {
   var dft = position.distanceFromTop;
   var dfl = position.distanceFromLeft;
 
-  if(dfl < 0 || dfl >= columnNumber || dft < 0 || dft >= lineNumber) {
+  if(dfl < 0 || dfl >= numberOfColumns || dft < 0 || dft >= numberOfLines) {
     return 'Invalid';
   } else if(labyrinth[dft][dfl] == 'Katana') {
     return 'Katana';
