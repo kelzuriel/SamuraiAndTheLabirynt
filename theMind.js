@@ -2,8 +2,8 @@
 // before his daimio found out and made him cut his guts with his little sword...
 
 
-var lineNumber = 3;
-var columnNumber = 10;
+var numberOfLines = 3;
+var numberOfColumns = 10;
 
 var startY = 1;
 var startX = 1;
