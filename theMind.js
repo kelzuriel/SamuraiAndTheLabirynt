@@ -2,38 +2,46 @@
 // before his daimio found out and made him cut his guts with his little sword...
 
 
+var numberOfLines = 3;
+var numberOfColumns = 10;
 
-var castle = new Array(10);
-for (var i = 0; i < castle.length; i++) {
-  castle[i] = new Array(10).fill('Empty');
-}
+var startY = 1;
+var startX = 1;
 
-castle[0][0] = "Samurai";
-castle[8][8] = "Katana";
+var labyrinth = new Array(numberOfLines);
+for (var i = 0; i < labyrinth.length; i++) {
+  labyrinth[i] = new Array(numberOfColumns).fill('Empty');
+};
 
-castle[0][3] = "Wall";
+labyrinth[startY][startX] = "Samurai";
+labyrinth[1][6] = "Katana";
 
-castle[2][0] = "Wall";
-castle[2][1] = "Wall";
-castle[2][2] = "Wall";
-castle[2][3] = "Wall";
+labyrinth[0][0] = "Wall";
+labyrinth[0][1] = "Wall";
+labyrinth[0][2] = "Wall";
+labyrinth[0][3] = "Wall";
+labyrinth[0][4] = "Wall";
+labyrinth[0][5] = "Wall";
+labyrinth[0][6] = "Wall";
+labyrinth[0][7] = "Wall";
+labyrinth[0][8] = "Wall";
+labyrinth[0][9] = "Wall";
 
-castle[4][3] = "Wall";
-castle[4][4] = "Wall";
-castle[4][5] = "Wall";
-castle[4][6] = "Wall";
+labyrinth[1][0] = "Wall";
+labyrinth[1][9] = "Wall";
 
-castle[5][6] = "Wall";
+labyrinth[2][0] = "Wall";
+labyrinth[2][1] = "Wall";
+labyrinth[2][2] = "Wall";
+labyrinth[2][3] = "Wall";
+labyrinth[2][4] = "Wall";
+labyrinth[2][5] = "Wall";
+labyrinth[2][6] = "Wall";
+labyrinth[2][7] = "Wall";
+labyrinth[2][8] = "Wall";
+labyrinth[2][9] = "Wall";
 
-castle[6][6] = "Wall";
-
-castle[7][7] = "Wall";
-castle[7][8] = "Wall";
-castle[7][9] = "Wall";
-
-castle[8][7] = "Wall";
-
-var calculateShortestPath = function([startY, startX], castle) {
+var calculateShortestPath = function([startY, startX], labyrinth) {
   var dft = startY;
   var dfl = startX;
 
@@ -51,7 +59,7 @@ var calculateShortestPath = function([startY, startX], castle) {
 
     var directions = ["Up", "Right", "Down", "Left"];
     for( dir in directions){
-      var newPosition = exploreInDirection(currentPosition, directions[dir], castle);
+      var newPosition = exploreInDirection(currentPosition, directions[dir], labyrinth);
       if(newPosition.status == 'Katana') {
         return newPosition;
       } else if(newPosition.status == 'Valid') {
@@ -63,23 +71,22 @@ var calculateShortestPath = function([startY, startX], castle) {
   return false;
 };
 
-var locationStatus = function(position, castle) {
-  var castleSize = castle.length;
+var locationStatus = function(position, labyrinth) {
   var dft = position.distanceFromTop;
   var dfl = position.distanceFromLeft;
 
-  if(dfl < 0 || dfl >= castleSize || dft < 0 || dft >= castleSize) {
+  if(dfl < 0 || dfl >= numberOfColumns || dft < 0 || dft >= numberOfLines) {
     return 'Invalid';
-  } else if(castle[dft][dfl] == 'Katana') {
+  } else if(labyrinth[dft][dfl] == 'Katana') {
     return 'Katana';
-  } else if(castle[dft][dfl] != 'Empty') {
+  } else if(labyrinth[dft][dfl] != 'Empty') {
     return 'Blocked';
   } else {
     return 'Valid';
-  }
+  };
 };
 
-var exploreInDirection = function(currentPosition, direction, castle) {
+var exploreInDirection = function(currentPosition, direction, labyrinth) {
   var newRoute = currentPosition.route.slice();
   newRoute.push(direction);
 
@@ -94,7 +101,7 @@ var exploreInDirection = function(currentPosition, direction, castle) {
     dft += 1;
   } else if(direction == 'Left') {
     dfl -= 1;
-  }
+  };
 
   var newPosition = {
     distanceFromTop: dft,
@@ -102,13 +109,13 @@ var exploreInDirection = function(currentPosition, direction, castle) {
     route: newRoute,
     status: 'Unknown'
   };
-  newPosition.status = locationStatus(newPosition, castle);
+  newPosition.status = locationStatus(newPosition, labyrinth);
 
   if(newPosition.status == 'Valid') {
-    castle[newPosition.distanceFromTop][newPosition.distanceFromLeft] = 'Investigated';
-  }
+    labyrinth[newPosition.distanceFromTop][newPosition.distanceFromLeft] = 'Investigated';
+  };
 
   return newPosition;
 };
 
-console.log(calculateShortestPath([0,0], castle));
+console.log(calculateShortestPath([startY,startX], labyrinth));
