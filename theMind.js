@@ -106,8 +106,9 @@ var goalX = 6;
     };
 
     return newPosition;
+
+  return false;
   };
 
   console.log(calculateShortestPath([startY,startX], labyrinth));
 })(this);
-
