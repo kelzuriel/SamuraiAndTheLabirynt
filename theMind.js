@@ -30,7 +30,7 @@ var goalX = 6;
 
   labyrinth[startY][startX] = "Samurai";
   labyrinth[goalY][goalX] = "Katana";
-  console.log(labyrinth)
+
   var calculateShortestPath = function([startY, startX], labyrinth) {
     var dft = startY;
     var dfl = startX;
