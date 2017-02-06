@@ -2,113 +2,112 @@
 // before his daimio found out and made him cut his guts with his little sword...
 
 
+var numberOfLines = 3;
+var numberOfColumns = 10;
 
-var castle = new Array(10);
-for (var i = 0; i < castle.length; i++) {
-  castle[i] = new Array(10).fill('Empty');
-}
+var wallsPerRow = {0: [0,1,2,3,4,5,6,7,8,9], 1: [0,7,8,9], 2: [0,1,2,3,4,5,6,7,8,9]};
 
-castle[0][0] = "Samurai";
-castle[8][8] = "Katana";
+var startY = 1;
+var startX = 1;
 
-castle[0][3] = "Wall";
+var goalY = 1;
+var goalX = 6;
 
-castle[2][0] = "Wall";
-castle[2][1] = "Wall";
-castle[2][2] = "Wall";
-castle[2][3] = "Wall";
-
-castle[4][3] = "Wall";
-castle[4][4] = "Wall";
-castle[4][5] = "Wall";
-castle[4][6] = "Wall";
-
-castle[5][6] = "Wall";
-
-castle[6][6] = "Wall";
-
-castle[7][7] = "Wall";
-castle[7][8] = "Wall";
-castle[7][9] = "Wall";
-
-castle[8][7] = "Wall";
-
-var calculateShortestPath = function([startY, startX], castle) {
-  var dft = startY;
-  var dfl = startX;
-
-  position = {
-    distanceFromTop: dft,
-    distanceFromLeft: dfl,
-    route: [],
-    status: 'Samurai'
+(function() {
+  var labyrinth = new Array(numberOfLines);
+  for (var i = 0; i < labyrinth.length; i++) {
+    labyrinth[i] = new Array(numberOfColumns).fill('Empty');
   };
 
-  var rememoriseList = [position];
+  var keys = Object.keys(wallsPerRow);
 
-  while (rememoriseList.length > 0) {
-    var currentPosition = rememoriseList.shift();
-
-    var directions = ["Up", "Right", "Down", "Left"];
-    for( dir in directions){
-      var newPosition = exploreInDirection(currentPosition, directions[dir], castle);
-      if(newPosition.status == 'Katana') {
-        return newPosition;
-      } else if(newPosition.status == 'Valid') {
-        rememoriseList.push(newPosition);
-      };
+  for(var i = 0; i < keys.length; i++) {
+    var columns = wallsPerRow[keys[i]];
+    for(var j = 0; j < columns.length; j++) {
+      labyrinth[keys[i]][columns[j]] = "Wall";
     };
   };
 
-  return false;
-};
+  labyrinth[startY][startX] = "Samurai";
+  labyrinth[goalY][goalX] = "Katana";
+  console.log(labyrinth)
+  var calculateShortestPath = function([startY, startX], labyrinth) {
+    var dft = startY;
+    var dfl = startX;
 
-var locationStatus = function(position, castle) {
-  var castleSize = castle.length;
-  var dft = position.distanceFromTop;
-  var dfl = position.distanceFromLeft;
+    position = {
+      distanceFromTop: dft,
+      distanceFromLeft: dfl,
+      route: [],
+      status: 'Samurai'
+    };
 
-  if(dfl < 0 || dfl >= castleSize || dft < 0 || dft >= castleSize) {
-    return 'Invalid';
-  } else if(castle[dft][dfl] == 'Katana') {
-    return 'Katana';
-  } else if(castle[dft][dfl] != 'Empty') {
-    return 'Blocked';
-  } else {
-    return 'Valid';
-  }
-};
+    var rememoriseList = [position];
 
-var exploreInDirection = function(currentPosition, direction, castle) {
-  var newRoute = currentPosition.route.slice();
-  newRoute.push(direction);
+    while (rememoriseList.length > 0) {
+      var currentPosition = rememoriseList.shift();
 
-  var dft = currentPosition.distanceFromTop;
-  var dfl = currentPosition.distanceFromLeft;
+      var directions = ["Up", "Right", "Down", "Left"];
+      for( dir in directions){
+        var newPosition = exploreInDirection(currentPosition, directions[dir], labyrinth);
+        if(newPosition.status == 'Katana') {
+          return newPosition;
+        } else if(newPosition.status == 'Valid') {
+          rememoriseList.push(newPosition);
+        };
+      };
+    };
 
-  if(direction == 'Up') {
-    dft -= 1;
-  } else if(direction == 'Right') {
-    dfl += 1;
-  } else if(direction == 'Down') {
-    dft += 1;
-  } else if(direction == 'Left') {
-    dfl -= 1;
-  }
-
-  var newPosition = {
-    distanceFromTop: dft,
-    distanceFromLeft: dfl,
-    route: newRoute,
-    status: 'Unknown'
+    return false;
   };
-  newPosition.status = locationStatus(newPosition, castle);
 
-  if(newPosition.status == 'Valid') {
-    castle[newPosition.distanceFromTop][newPosition.distanceFromLeft] = 'Investigated';
-  }
+  var locationStatus = function(position, labyrinth) {
+    var dft = position.distanceFromTop;
+    var dfl = position.distanceFromLeft;
 
-  return newPosition;
-};
+    if(dfl < 0 || dfl >= numberOfColumns || dft < 0 || dft >= numberOfLines) {
+      return 'Invalid';
+    } else if(labyrinth[dft][dfl] == 'Katana') {
+      return 'Katana';
+    } else if(labyrinth[dft][dfl] != 'Empty') {
+      return 'Blocked';
+    } else {
+      return 'Valid';
+    };
+  };
 
-console.log(calculateShortestPath([0,0], castle));
+  var exploreInDirection = function(currentPosition, direction, labyrinth) {
+    var newRoute = currentPosition.route.slice();
+    newRoute.push(direction);
+
+    var dft = currentPosition.distanceFromTop;
+    var dfl = currentPosition.distanceFromLeft;
+
+    if(direction == 'Up') {
+      dft -= 1;
+    } else if(direction == 'Right') {
+      dfl += 1;
+    } else if(direction == 'Down') {
+      dft += 1;
+    } else if(direction == 'Left') {
+      dfl -= 1;
+    };
+
+    var newPosition = {
+      distanceFromTop: dft,
+      distanceFromLeft: dfl,
+      route: newRoute,
+      status: 'Unknown'
+    };
+    newPosition.status = locationStatus(newPosition, labyrinth);
+
+    if(newPosition.status == 'Valid') {
+      labyrinth[newPosition.distanceFromTop][newPosition.distanceFromLeft] = 'Investigated';
+    };
+
+    return newPosition;
+  };
+
+  console.log(calculateShortestPath([startY,startX], labyrinth));
+})(this);
+
