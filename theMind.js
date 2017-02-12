@@ -5,117 +5,108 @@
 var numberOfLines = 3;
 var numberOfColumns = 10;
 
+var wallsPerRow = {0: [0,1,2,3,4,5,6,7,8,9], 1: [0,7,8,9], 2: [0,1,2,3,4,5,6,7,8,9]};
+
 var startY = 1;
 var startX = 1;
 
-var labyrinth = new Array(numberOfLines);
-for (var i = 0; i < labyrinth.length; i++) {
-  labyrinth[i] = new Array(numberOfColumns).fill('Empty');
-};
+var goalY = 1;
+var goalX = 6;
 
-labyrinth[startY][startX] = "Samurai";
-labyrinth[1][6] = "Katana";
-
-labyrinth[0][0] = "Wall";
-labyrinth[0][1] = "Wall";
-labyrinth[0][2] = "Wall";
-labyrinth[0][3] = "Wall";
-labyrinth[0][4] = "Wall";
-labyrinth[0][5] = "Wall";
-labyrinth[0][6] = "Wall";
-labyrinth[0][7] = "Wall";
-labyrinth[0][8] = "Wall";
-labyrinth[0][9] = "Wall";
-
-labyrinth[1][0] = "Wall";
-labyrinth[1][9] = "Wall";
-
-labyrinth[2][0] = "Wall";
-labyrinth[2][1] = "Wall";
-labyrinth[2][2] = "Wall";
-labyrinth[2][3] = "Wall";
-labyrinth[2][4] = "Wall";
-labyrinth[2][5] = "Wall";
-labyrinth[2][6] = "Wall";
-labyrinth[2][7] = "Wall";
-labyrinth[2][8] = "Wall";
-labyrinth[2][9] = "Wall";
-
-var calculateShortestPath = function([startY, startX], labyrinth) {
-  var dft = startY;
-  var dfl = startX;
-
-  position = {
-    distanceFromTop: dft,
-    distanceFromLeft: dfl,
-    route: [],
-    status: 'Samurai'
+(function() {
+  var labyrinth = new Array(numberOfLines);
+  for (var i = 0; i < labyrinth.length; i++) {
+    labyrinth[i] = new Array(numberOfColumns).fill('Empty');
   };
 
-  var rememoriseList = [position];
+  var keys = Object.keys(wallsPerRow);
 
-  while (rememoriseList.length > 0) {
-    var currentPosition = rememoriseList.shift();
-
-    var directions = ["Up", "Right", "Down", "Left"];
-    for( dir in directions){
-      var newPosition = exploreInDirection(currentPosition, directions[dir], labyrinth);
-      if(newPosition.status == 'Katana') {
-        return newPosition;
-      } else if(newPosition.status == 'Valid') {
-        rememoriseList.push(newPosition);
-      };
+  for(var i = 0; i < keys.length; i++) {
+    var columns = wallsPerRow[keys[i]];
+    for(var j = 0; j < columns.length; j++) {
+      labyrinth[keys[i]][columns[j]] = "Wall";
     };
   };
 
-  return false;
-};
+  labyrinth[startY][startX] = "Samurai";
+  labyrinth[goalY][goalX] = "Katana";
 
-var locationStatus = function(position, labyrinth) {
-  var dft = position.distanceFromTop;
-  var dfl = position.distanceFromLeft;
+  var calculateShortestPath = function([startY, startX], labyrinth) {
+    var dft = startY;
+    var dfl = startX;
 
-  if(dfl < 0 || dfl >= numberOfColumns || dft < 0 || dft >= numberOfLines) {
-    return 'Invalid';
-  } else if(labyrinth[dft][dfl] == 'Katana') {
-    return 'Katana';
-  } else if(labyrinth[dft][dfl] != 'Empty') {
-    return 'Blocked';
-  } else {
-    return 'Valid';
-  };
-};
+    position = {
+      distanceFromTop: dft,
+      distanceFromLeft: dfl,
+      route: [],
+      status: 'Samurai'
+    };
 
-var exploreInDirection = function(currentPosition, direction, labyrinth) {
-  var newRoute = currentPosition.route.slice();
-  newRoute.push(direction);
+    var rememoriseList = [position];
 
-  var dft = currentPosition.distanceFromTop;
-  var dfl = currentPosition.distanceFromLeft;
+    while (rememoriseList.length > 0) {
+      var currentPosition = rememoriseList.shift();
 
-  if(direction == 'Up') {
-    dft -= 1;
-  } else if(direction == 'Right') {
-    dfl += 1;
-  } else if(direction == 'Down') {
-    dft += 1;
-  } else if(direction == 'Left') {
-    dfl -= 1;
+      var directions = ["Up", "Right", "Down", "Left"];
+      for( dir in directions){
+        var newPosition = exploreInDirection(currentPosition, directions[dir], labyrinth);
+        if(newPosition.status == 'Katana') {
+          return newPosition;
+        } else if(newPosition.status == 'Valid') {
+          rememoriseList.push(newPosition);
+        };
+      };
+    };
+
+    return false;
   };
 
-  var newPosition = {
-    distanceFromTop: dft,
-    distanceFromLeft: dfl,
-    route: newRoute,
-    status: 'Unknown'
+  var locationStatus = function(position, labyrinth) {
+    var dft = position.distanceFromTop;
+    var dfl = position.distanceFromLeft;
+
+    if(dfl < 0 || dfl >= numberOfColumns || dft < 0 || dft >= numberOfLines) {
+      return 'Invalid';
+    } else if(labyrinth[dft][dfl] == 'Katana') {
+      return 'Katana';
+    } else if(labyrinth[dft][dfl] != 'Empty') {
+      return 'Blocked';
+    } else {
+      return 'Valid';
+    };
   };
-  newPosition.status = locationStatus(newPosition, labyrinth);
 
-  if(newPosition.status == 'Valid') {
-    labyrinth[newPosition.distanceFromTop][newPosition.distanceFromLeft] = 'Investigated';
+  var exploreInDirection = function(currentPosition, direction, labyrinth) {
+    var newRoute = currentPosition.route.slice();
+    newRoute.push(direction);
+
+    var dft = currentPosition.distanceFromTop;
+    var dfl = currentPosition.distanceFromLeft;
+
+    if(direction == 'Up') {
+      dft -= 1;
+    } else if(direction == 'Right') {
+      dfl += 1;
+    } else if(direction == 'Down') {
+      dft += 1;
+    } else if(direction == 'Left') {
+      dfl -= 1;
+    };
+
+    var newPosition = {
+      distanceFromTop: dft,
+      distanceFromLeft: dfl,
+      route: newRoute,
+      status: 'Unknown'
+    };
+    newPosition.status = locationStatus(newPosition, labyrinth);
+
+    if(newPosition.status == 'Valid') {
+      labyrinth[newPosition.distanceFromTop][newPosition.distanceFromLeft] = 'Investigated';
+    };
+
+    return newPosition;
   };
 
-  return newPosition;
-};
-
-console.log(calculateShortestPath([startY,startX], labyrinth));
+  console.log(calculateShortestPath([startY,startX], labyrinth));
+})(this);
